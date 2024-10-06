@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+    
+    .register-container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        width: 350px;
+    }
+    
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    .input-group {
+        margin-bottom: 15px;
+        position: relative;
+    }
+    
+    label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+    }
+    
+    input[type="text"],
+    input[type="password"],
+    input[type="date"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+    
+    input:focus {
+        border-color: #007BFF;
+    }
+    
+    small {
+        color: red;
+        position: absolute;
+        bottom: -20px;
+        left: 0;
+        visibility: hidden;
+    }
+    
+    button {
+        width: 100%;
+        padding: 10px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    
+    button:hover {
+        background-color: #0056b3;
+    }
+    
+    p#successMessage {
+        text-align: center;
+        margin-top: 15px;
+        font-size: 16px;
+    }
+</style>
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="register-container">
+        <form id="registerForm" onsubmit="return validateForm()">
+            <h2>Register</h2>
+
+            <!-- Name Field -->
+            <div class="input-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" placeholder="Enter your name">
+                <small id="nameError"></small>
+            </div>
+
+            <!-- Email Field -->
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="text" id="email" name="email" placeholder="Enter your email">
+                <small id="emailError"></small>
+            </div>
+
+            <!-- Password Field -->
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password">
+                <small id="passwordError"></small>
+            </div>
+
+            <!-- Date of Birth Field -->
+            <div class="input-group">
+                <label for="dob">Date of Birth</label>
+                <input type="date" id="dob" name="dob">
+                <small id="dobError"></small>
+            </div>
+
+            <!-- Terms and Conditions -->
+            <div class="input-group">
+                <input type="checkbox" id="terms" name="terms">
+                <label for="terms">I accept the <a href="#">Terms and Conditions</a></label>
+                <small id="termsError"></small>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit">Register</button>
+
+            <!-- Success Message -->
+            <p id="successMessage" style="display: none; color: green;">Successfully registered!</p>
+        </form>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+<script>// Validate Email with Regex
+    function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+    
+    // Calculate Age
+    function calculateAge(dob) {
+        const birthDate = new Date(dob);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+    
+        return age;
+    }
+    
+    // Validate Form
+    function validateForm() {
+        let isValid = true;
+    
+        // Get form inputs
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const dob = document.getElementById('dob').value;
+        const termsAccepted = document.getElementById('terms').checked;
+    
+        // Name validation
+        const nameError = document.getElementById('nameError');
+        if (name.trim() === "") {
+            nameError.innerText = "Name cannot be empty.";
+            nameError.style.visibility = "visible";
+            isValid = false;
+        } else {
+            nameError.style.visibility = "hidden";
+        }
+    
+        // Email validation
+        const emailError = document.getElementById('emailError');
+        if (!validateEmail(email)) {
+            emailError.innerText = "Please enter a valid email.";
+            emailError.style.visibility = "visible";
+            isValid = false;
+        } else {
+            emailError.style.visibility = "hidden";
+        }
+    
+        // Password validation
+        const passwordError = document.getElementById('passwordError');
+        if (password === "") {
+            passwordError.innerText = "Password cannot be empty.";
+            passwordError.style.visibility = "visible";
+            isValid = false;
+        } else {
+            passwordError.style.visibility = "hidden";
+        }
+    
+        // Date of Birth validation
+        const dobError = document.getElementById('dobError');
+        const age = calculateAge(dob);
+        if (dob === "") {
+            dobError.innerText = "Please select your date of birth.";
+            dobError.style.visibility = "visible";
+            isValid = false;
+        } else if (age < 18 || age > 55) {
+            dobError.innerText = "Age must be between 18 and 55.";
+            dobError.style.visibility = "visible";
+            isValid = false;
+        } else {
+            dobError.style.visibility = "hidden";
+        }
+    
+        // Terms and Conditions validation
+        const termsError = document.getElementById('termsError');
+        if (!termsAccepted) {
+            termsError.innerText = "You must accept the terms and conditions.";
+            termsError.style.visibility = "visible";
+            isValid = false;
+        } else {
+            termsError.style.visibility = "hidden";
+        }
+    
+        // If all validations pass, show success message
+        const successMessage = document.getElementById('successMessage');
+        if (isValid) {
+            successMessage.style.display = "block";
+        } else {
+            successMessage.style.display = "none";
+        }
+    
+        return isValid;
+    }
+    </script>
+</html>
